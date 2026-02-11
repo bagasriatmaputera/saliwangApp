@@ -46,6 +46,10 @@ class OrderSeatController
 
         \App\Models\Booking::create($validated);
 
+        $message = "Halo Pak Saliwang, saya mau booking kursi ..., apakah tersedia?";
+
+        $url = "https://wa.me/6287703631260?text=" . urlencode($message);
+
         return redirect()->back()->with('success', 'Pesanan berhasil dibuat!');
     }
 
