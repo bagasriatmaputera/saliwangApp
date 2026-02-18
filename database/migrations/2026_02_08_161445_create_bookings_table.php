@@ -12,14 +12,18 @@ return new class extends Migration {
 
             $table->foreignId('bus_id')
                   ->constrained('buses')
-                  ->onDelete('cascade');
+                  ->onDelete('restrict');
 
             $table->foreignId('seat_id')
                   ->constrained('seats')
-                  ->onDelete('cascade');
+                  ->onDelete('restrict');
+
+            $table->foreignId('trip_id')
+                  ->constrained('trip_availables')
+                  ->onDelete('restrict');
 
             $table->string('nama_pemesan');
-            $table->string('no_hp');
+            $table->string('no_hp')->nullable();
             $table->string('tujuan');
             $table->string('titik_jemput', 100)->nullable()->default(NULL);
 
