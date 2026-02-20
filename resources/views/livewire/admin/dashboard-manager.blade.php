@@ -9,12 +9,12 @@
         <x-button label="Tambah Booking Manual" @click="$wire.bookingModal = true" icon="o-plus"
             class="btn-primary w-full md:w-auto shadow-lg shadow-blue-200" />
     </div>
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <x-button label="Keluar" icon="o-power" onclick="event.preventDefault(); this.closest('form').submit();"
-            class="btn-ghost text-red-600 hover:bg-red-50 border-none font-bold uppercase text-xs" />
-    </form>
-    {{-- Section 1: Ringkasan Booking --}}
+    <div class="flex items-center gap-3">
+        {{-- Tombol Logout  --}}
+        <x-button label="Keluar" icon="o-power" wire:click="logout"
+            wire:confirm="Yakin ingin keluar dari Manajemen MBS Trans?" spinner="logout"
+            class="btn-ghost text-red-600 hover:bg-red-50 border-none font-black uppercase text-[10px] tracking-widest" />
+    </div>
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-4 border-b bg-gray-50/50 flex justify-between items-center">
             <h3 class="font-bold text-gray-700 flex items-center gap-2">

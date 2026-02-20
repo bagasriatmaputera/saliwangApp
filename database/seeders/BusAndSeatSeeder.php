@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Seat;
 use App\Models\Bus;
+use App\Models\TripAvailable;
+use App\Models\User;
+use Hash;
 use Illuminate\Database\Seeder;
 
 class BusAndSeatSeeder extends Seeder
@@ -13,30 +16,46 @@ class BusAndSeatSeeder extends Seeder
      */
     public function run(): void
     {
-         $bus = Bus::create([
-            'nama_bus'    => 'Mudik Bareng Saliwang (MBS Trans)',
-            'tanggal'     => '2026-03-17',
-            'jam'         => '19:00',
+        User::updateOrCreate(
+            ['email' => 'admin@mbs.com'],
+            [
+                'name' => 'Bagas MBS',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $bus = Bus::create([
+            'nama_bus' => 'Mudik Bareng Saliwang (MBS Trans)',
+            'tanggal' => '2026-03-17',
+            'jam' => '19:00',
             'owner_phone' => '6281234567890'
         ]);
 
-        $rows = range('A', 'Z');
-        $seatCount = 0;
+        $seatCount = 50;
 
-        foreach ($rows as $row) {
-            for ($number = 1; $number <= 2; $number++) {
-                $seatCount++;
+        for ($i = 1; $i <= $seatCount; $i++) {
+            dump("Membuat kursi ke-" . $i);
+            Seat::create([
+                'bus_id' => $bus->id,
+                'seat_number' => '#' . $i,
+            ]);
+        }
+        ;
 
-                if ($seatCount > 55) {
-                    break 2;
-                }
+        $jadwalTrip = [
+            ['tanggal' => '2026-03-17', 'rute' => 'Jakarta - Wonogiri'],
+            ['tanggal' => '2026-03-24', 'rute' => 'Wonogiri - Jakarta']
 
-                Seat::create([
-                    'bus_id'      => $bus->id,
-                    'seat_number' => $row . $number,
-                    'status'      => 'available'
-                ]);
-            }
+
+        ];
+
+        foreach ($jadwalTrip as $trip) {
+            TripAvailable::create([
+                'bus_id' => 1,
+                'jadwal_trip' => $trip['tanggal'],
+                'rute' => $trip['rute']
+            ]);
         }
     }
 }

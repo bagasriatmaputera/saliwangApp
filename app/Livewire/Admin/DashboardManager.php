@@ -118,6 +118,12 @@ class DashboardManager extends Component
         Booking::findOrFail($id)->delete();
         $this->success('Booking dihapus.');
     }
+    public function logout(\App\Livewire\Actions\Logout $logout)
+    {
+        $logout();
+
+        return $this->redirect(route('login'), navigate: true);
+    }
 
     public function render()
     {

@@ -17,6 +17,7 @@ return new class extends Migration
                   ->constrained('buses')
                   ->onDelete('restrict');
             $table->date('jadwal_trip');
+            $table->string('rute');
             $table->timestamps();
         });
     }

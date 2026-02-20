@@ -9,10 +9,17 @@ class Seat extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'bus_id'
+        'bus_id',
+        'seat_number',
+        'status'
     ];
 
-    public function buses(){
-        $this->belongsTo(Bus::class);
+    public function buses()
+    {
+        return $this->belongsTo(Bus::class);
+    }
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 }
