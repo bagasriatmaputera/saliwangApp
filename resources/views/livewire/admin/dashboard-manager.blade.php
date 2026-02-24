@@ -217,4 +217,45 @@
             <x-button label="Simpan Reservasi" wire:click="save" class="btn-primary" spinner="save" />
         </x-slot:actions>
     </x-modal>
+
+    {{-- MODAL SHOW PENUMPANG --}}
+    <x-modal wire:model="showPassengerModal" title="Detail Penumpang" subtitle="Informasi reservasi kursi" separator>
+        @if ($selectedBooking)
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <p class="text-[10px] uppercase font-black text-gray-400">Nama Pelanggan</p>
+                        <p class="font-bold text-gray-800">{{ $selectedBooking->nama_pemesan }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <p class="text-[10px] uppercase font-black text-gray-400">Nomor Kursi</p>
+                        <p class="font-bold text-blue-600">{{ $selectedBooking->seat->seat_number }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <p class="text-[10px] uppercase font-black text-gray-400">WhatsApp</p>
+                        <p class="font-bold text-gray-800">{{ $selectedBooking->no_hp }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <p class="text-[10px] uppercase font-black text-gray-400">Tujuan</p>
+                        <p class="font-bold text-gray-800 uppercase">{{ $selectedBooking->tujuan }}</p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                    <p class="text-[10px] uppercase font-black text-blue-400">Titik Jemput</p>
+                    <p class="text-sm font-medium text-blue-800">{{ $selectedBooking->titik_jemput ?? 'Tidak diisi' }}
+                    </p>
+                </div>
+            </div>
+        @endif
+
+        <x-slot:actions>
+            {{-- Tombol Hapus --}}
+            <x-button label="Hapus Booking" icon="o-trash"
+                wire:click="deleteBooking({{ $selectedBooking->id ?? 0 }})"
+                wire:confirm="Yakin ingin membatalkan booking ini?" class="btn-ghost text-red-500" />
+
+            <x-button label="Tutup" @click="$wire.showPassengerModal = false" />
+        </x-slot:actions>
+    </x-modal>
 </div>

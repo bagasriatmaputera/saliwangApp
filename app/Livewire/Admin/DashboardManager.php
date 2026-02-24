@@ -70,10 +70,27 @@ class DashboardManager extends Component
             ->get();
     }
 
+    public $showPassengerModal = false;
+    public $selectedBooking;
+
     public function openBookingModal($seatId)
     {
-        $this->seat_id = $seatId;
-        $this->bookingModal = true;
+        $seat = Seat::find($seatId);
+
+        // Cek apakah kursi sudah di-booking pada trip ini
+        $booking = Booking::where('seat_id', $seatId)
+            ->where('trip_id', $this->trip_id)
+            ->first();
+
+        if ($booking) {
+            // Jika sudah ada isinya, tampilkan modal detail
+            $this->selectedBooking = $booking;
+            $this->showPassengerModal = true;
+        } else {
+            // Jika kosong, buka modal booking manual seperti biasa
+            $this->seat_id = $seatId;
+            $this->bookingModal = true;
+        }
     }
 
     public function save()
