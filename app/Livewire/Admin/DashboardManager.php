@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Admin;
 
-use DB;
+// use DB;
 use Livewire\Component;
 use App\Models\Booking;
 use App\Models\Seat;
 use App\Models\Feedback;
 use App\Models\TripAvailable;
+use Illuminate\Support\Facades\DB;
 use Mary\Traits\Toast;
 use Livewire\Attributes\Computed;
 
@@ -78,13 +79,13 @@ class DashboardManager extends Component
         $seat = Seat::find($seatId);
 
         // Cek apakah kursi sudah di-booking pada trip ini
-        $booking = Booking::where('seat_id', $seatId)
+        $booking = Booking::with('seat')->where('seat_id', $seatId)
             ->where('trip_id', $this->trip_id)
             ->first();
 
         if ($booking) {
             // Jika sudah ada isinya, tampilkan modal detail
-            $this->selectedBooking = $booking;
+            $this->selectedBooking = $booking->toArray(); // ubah ke array agar Livewire bisa binding
             $this->showPassengerModal = true;
         } else {
             // Jika kosong, buka modal booking manual seperti biasa
@@ -123,10 +124,34 @@ class DashboardManager extends Component
             $this->success('Booking Berhasil terbuat!');
             $this->bookingModal = false;
             $this->reset(['nama_pemesan', 'no_hp', 'tujuan', 'titik_jemput']);
-
         } catch (\Exception $e) {
             DB::rollBack();
             $this->error('Gagal simpan: ' . $e->getMessage());
+        }
+    }
+
+    public function updateBooking($id)
+    {
+        $this->validate([
+            'selectedBooking.nama_pemesan' => 'required|min:3',
+            'selectedBooking.no_hp' => 'nullable|numeric',
+            'selectedBooking.tujuan' => 'required',
+            'selectedBooking.titik_jemput' => 'nullable',
+            // tambahkan validasi lain jika perlu
+        ]);
+
+        try {
+            $booking = Booking::findOrFail($id);
+            $booking->nama_pemesan = $this->selectedBooking['nama_pemesan'] ?? $booking->nama_pemesan;
+            $booking->no_hp = $this->selectedBooking['no_hp'] ?? $booking->no_hp;
+            $booking->tujuan = $this->selectedBooking['tujuan'] ?? $booking->tujuan;
+            $booking->titik_jemput = $this->selectedBooking['titik_jemput'] ?? $booking->titik_jemput;
+            $booking->save();
+
+            $this->success('Data booking berhasil diupdate!');
+            $this->showPassengerModal = false;
+        } catch (\Exception $e) {
+            $this->error('Gagal update: ' . $e->getMessage());
         }
     }
 

@@ -225,25 +225,25 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-50 p-3 rounded-lg">
                         <p class="text-[10px] uppercase font-black text-gray-400">Nama Pelanggan</p>
-                        <p class="font-bold text-gray-800">{{ $selectedBooking->nama_pemesan }}</p>
+                        <x-input wire:model.defer="selectedBooking.nama_pemesan" :value="data_get($selectedBooking, 'nama_pemesan')" />
                     </div>
                     <div class="bg-gray-50 p-3 rounded-lg">
                         <p class="text-[10px] uppercase font-black text-gray-400">Nomor Kursi</p>
-                        <p class="font-bold text-blue-600">{{ $selectedBooking->seat->seat_number }}</p>
+                        <x-input wire:model.defer="selectedBooking.seat.seat_number" :value="data_get($selectedBooking, 'seat.seat_number')" disabled />
                     </div>
                     <div class="bg-gray-50 p-3 rounded-lg">
                         <p class="text-[10px] uppercase font-black text-gray-400">WhatsApp</p>
-                        <p class="font-bold text-gray-800">{{ $selectedBooking->no_hp }}</p>
+                        <x-input wire:model.defer="selectedBooking.no_hp" :value="data_get($selectedBooking, 'no_hp')" />
                     </div>
                     <div class="bg-gray-50 p-3 rounded-lg">
                         <p class="text-[10px] uppercase font-black text-gray-400">Tujuan</p>
-                        <p class="font-bold text-gray-800 uppercase">{{ $selectedBooking->tujuan }}</p>
+                        <x-input wire:model.defer="selectedBooking.tujuan" :value="data_get($selectedBooking, 'tujuan')" />
                     </div>
                 </div>
 
                 <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
                     <p class="text-[10px] uppercase font-black text-blue-400">Titik Jemput</p>
-                    <p class="text-sm font-medium text-blue-800">{{ $selectedBooking->titik_jemput ?? 'Tidak diisi' }}
+                    <x-input wire:model.defer="selectedBooking.titik_jemput" :value="data_get($selectedBooking, 'titik_jemput')" />
                     </p>
                 </div>
             </div>
@@ -251,11 +251,15 @@
 
         <x-slot:actions>
             {{-- Tombol Hapus --}}
+
             <x-button label="Hapus Booking" icon="o-trash"
-                wire:click="deleteBooking({{ $selectedBooking->id ?? 0 }})"
+                wire:click="deleteBooking({{ data_get($selectedBooking, 'id', 0) }})"
                 wire:confirm="Yakin ingin membatalkan booking ini?" class="btn-ghost text-red-500" />
 
-            <x-button label="Tutup" @click="$wire.showPassengerModal = false" />
+            {{-- <x-button label="Tutup" @click="$wire.showPassengerModal = false" /> --}}
+            @if ($selectedBooking)
+            <x-button label="Update Nama" wire:click="updateBooking({{ data_get($selectedBooking, 'id', 0) }})" class="btn-primary" />
+            @endif
         </x-slot:actions>
     </x-modal>
 </div>
